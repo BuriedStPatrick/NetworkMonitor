@@ -1,5 +1,4 @@
-﻿using System;
-using Coravel.Scheduling.Schedule.Interfaces;
+﻿using Coravel.Scheduling.Schedule.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetworkMonitor.App.Invocables;
@@ -11,35 +10,27 @@ namespace NetworkMonitor.App.Pinging
         public static void SchedulePinging(this IScheduler scheduler)
         {
             scheduler.Schedule<PingInvocable>()
-                .EverySecond()
+                .EveryFiveSeconds()
                 .PreventOverlapping(typeof(PingInvocable).FullName);
         }
 
-        public static void AddPinging(
-            this IServiceCollection serviceCollection,
-            Action<IPingConfiguration> pingConfigurationDelegate
-        )
+        public static PingingConfigurationBuilder AddPinging(this IServiceCollection serviceCollection)
         {
-            
-        }
-
-        public static PingingBuilder AddPinging(this IServiceCollection serviceCollection)
-        {
-            return new PingingBuilder(serviceCollection);
+            return new PingingConfigurationBuilder(serviceCollection);
         }
     }
 
-    public class PingingBuilder
+    public class PingingConfigurationBuilder
     {
         private readonly IServiceCollection _serviceCollection;
 
-        public PingingBuilder(IServiceCollection serviceCollection)
+        public PingingConfigurationBuilder(IServiceCollection serviceCollection)
         {
             serviceCollection.AddTransient<PingInvocable>();
             _serviceCollection = serviceCollection;
         }
 
-        public PingingBuilder FromConfig(IConfiguration configuration)
+        public PingingConfigurationBuilder FromConfig(IConfiguration configuration)
         {
             _serviceCollection.AddSingleton<IPingConfiguration>(configuration.GetSection("Ping").Get<PingConfiguration>());
             return this;
