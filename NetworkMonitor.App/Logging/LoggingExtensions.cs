@@ -32,23 +32,18 @@ namespace NetworkMonitor.App.Logging
                     .ToList();
             }
 
-            loggerConfiguration.WriteTo.MSSqlServer(
-                serilogMsSqlServerConfig.ConnectionString,
-                serilogMsSqlServerConfig.TableName,
-                autoCreateSqlTable: serilogMsSqlServerConfig.AutoCreateSqlTable,
-                columnOptions: columnOptions
-            );
-
-            //loggerConfiguration
-            //    .WriteTo.Logger(
-            //        logger => logger
-            //            .WriteTo.MSSqlServer(
-            //                serilogMsSqlServerConfig.ConnectionString,
-            //                serilogMsSqlServerConfig.TableName,
-            //                autoCreateSqlTable: serilogMsSqlServerConfig.AutoCreateSqlTable,
-            //                columnOptions: columnOptions
-            //            )
-            //    );
+            loggerConfiguration
+                    .WriteTo.Logger(
+                        logger => logger
+                            .WriteTo.MSSqlServer(
+                                serilogMsSqlServerConfig.ConnectionString,
+                                serilogMsSqlServerConfig.TableName,
+                                autoCreateSqlTable: serilogMsSqlServerConfig.AutoCreateSqlTable,
+                                columnOptions: columnOptions
+                            ).Filter.ByIncludingOnly(logEvent =>
+                                logEvent.Properties.ContainsKey("LogToSql") || logEvent.Exception != null
+                            )
+                    );
 
             return loggerConfiguration;
         }

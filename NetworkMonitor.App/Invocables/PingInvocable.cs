@@ -3,6 +3,7 @@ using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using Coravel.Invocable;
 using Microsoft.Extensions.Logging;
+using NetworkMonitor.App.Logging;
 using NetworkMonitor.App.Logging.Enrichers;
 using NetworkMonitor.App.Pinging;
 using Serilog.Context;
@@ -32,7 +33,10 @@ namespace NetworkMonitor.App.Invocables
                     var status = reply.Status;
                     if (reply.Status != IPStatus.Success)
                     {
-                        _logger.LogError(status.ToString());
+                        using (LogContext.Push(new LogToSqlEnricher()))
+                        {
+                            _logger.LogError(status.ToString());
+                        }
                     }
                     else
                     {
