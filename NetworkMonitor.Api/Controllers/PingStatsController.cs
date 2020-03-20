@@ -29,7 +29,8 @@ namespace NetworkMonitor.Api.Controllers
         public async Task<IActionResult> Get()
         {
             var sql = @"
-                SELECT * FROM NM_Log
+                SELECT TOP(500) * FROM NM_Log
+                ORDER BY TimeStamp DESC
             ";
 
             await using var connection = new SqlConnection(_configuration.GetValue<string>("ConnectionStrings:LogDatabase"));
