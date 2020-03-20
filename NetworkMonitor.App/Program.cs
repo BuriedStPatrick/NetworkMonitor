@@ -68,8 +68,8 @@ namespace NetworkMonitor.App
             return configurationBuilder
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", false, true)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", true, true)
                 .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("NM_ENVIRONMENT")}.json", true, true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")}.json", true, true)
                 .Build();
         }
 
